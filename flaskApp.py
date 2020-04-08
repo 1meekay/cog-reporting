@@ -1,8 +1,10 @@
-from flask import Flask, request, make_response, Response
+from flask import Flask, request, make_response
 from twilio.twiml.messaging_response import MessagingResponse
 from db import ResponsesDB
 from messaging import Message
 from datetime import datetime, timedelta
+
+# LOOK INTO SESSIONS
 
 app = Flask(__name__)
 
@@ -42,6 +44,9 @@ def sms_reply():
             rdb.response_values.update(filled_responses)
             rdb.insert_into_db()
 
+            # run cogmain
+            # empty out db
+
             twml.message('-\n\nReport sent, thank you. Goodbye!')
             return str(twml)
         else:
@@ -52,9 +57,9 @@ def sms_reply():
         # the twilio response comes from the dict with last_message (key), response(value) pairs in messaging.py
 
         if twilio_response in tmsg.twilio_responses:
-            print(twilio_response)
-            print(user_message)
-            print('========================================')
+            # print(twilio_response)
+            # print(user_message)
+            # print('========================================')
 
             twml.message(tmsg.twilio_responses[twilio_response])
 
