@@ -11,7 +11,7 @@ class Message:
         self.last_twilio_message = None
 
         self.twilio_responses = {
-            'Bainet': '-\n\nrevivals?',
+            'start': '-\n\nrevivals?',
             'revivals': '-\n\nvisits?',
             'visits': '-\n\nspecial_services?',
             'special_services': '-\n\nsermons?',
@@ -20,7 +20,7 @@ class Message:
             'lectures': '-\n\nworker_classes?',
             'worker_classes': '-\n\ncounseling_hours?',
             'counseling_hours': '-\n\nchoir_meetings?',
-            'choir_meetings': '-\n\nReport sent, thank you!',
+            'choir_meetings': '-\n\nText "ok" to send report',
         }
 
 

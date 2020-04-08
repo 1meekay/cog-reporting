@@ -1,7 +1,9 @@
 *.ipynb
-flaskApp2.py
-flaskApp-og.py
+#flaskApp2.py
+#flaskApp-og.py
 __pycache__
 .ipynb_checkpoints
 .DS_Store
 .idea
+
+flaskApp_good_unfinished.py

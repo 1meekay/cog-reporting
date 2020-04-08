@@ -1,6 +1,8 @@
 from selenium.webdriver import Chrome
 import os
 
+# TURN THIS INTO OOP, END WITH IF NAME == 'MAIN'
+
 cog_username = os.environ.get('cogUsername')
 cog_password = os.environ.get('cogPassword')
 

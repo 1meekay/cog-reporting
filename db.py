@@ -29,8 +29,8 @@ class ResponsesDB(Database):
         )
 
 
-    def insert(self, row, value):
-        self.response_values[row] = value
+    # def insert(self, row, value):
+    #     self.response_values[row] = value
 
 
     def insert_into_db(self):
@@ -39,6 +39,7 @@ class ResponsesDB(Database):
             (list(self.response_values.values()))
         )
         self.conn.commit()
+        self.close()
 
 
 # # need this?

@@ -8,34 +8,16 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def sms_reply():
-    # print('\n\n', request.form.to_dict(), '\n\n')
-
     user_message = request.form['Body']
 
-    rdb = ResponsesDB()
     twml = MessagingResponse()
-
-
     tmsg = Message()
     tmsg.get_last_message()
-
-    print('========================================')
-    print('\n\nLast message:', tmsg.last_twilio_message, '\n\n')
-
-    print('\n\nCOOKIES\n\n')
-    print(request.cookies)
-    print('\n\n')
-
-    from pprint import pprint
-    pprint(dict(request.cookies))
-    # print(list(request.cookies.keys()))
-    print('========================================')
-
 
 
     if user_message.strip().lower() == 'cog':
         twml.message('-\n\nWelcome Bainet!')
-        twml.message(tmsg.twilio_responses['Bainet'])
+        twml.message(tmsg.twilio_responses['start'])
 
         response = make_response(str(twml))
 
@@ -47,16 +29,32 @@ def sms_reply():
             )
 
         return response
-        # return str(twml)
+    elif user_message.strip().lower() == 'ok':
+        # check if all responses are filled in
+
+        saved_cookies = dict(request.cookies)
+        filled_responses = {key: saved_cookies[key] for key in saved_cookies if '$' not in key}
+        print(filled_responses)
+
+        if len(filled_responses) == 9:
+            rdb = ResponsesDB()
+
+            rdb.response_values.update(filled_responses)
+            rdb.insert_into_db()
+
+            twml.message('-\n\nReport sent, thank you. Goodbye!')
+            return str(twml)
+        else:
+            twml.message('-\n\nSomething went wrong. Text "cog" to restart report.')
+            return str(twml)
     else:
         twilio_response = tmsg.last_twilio_message.split()[-1][:-1]
+        # the twilio response comes from the dict with last_message (key), response(value) pairs in messaging.py
 
         if twilio_response in tmsg.twilio_responses:
             print(twilio_response)
             print(user_message)
-            print('\n')
-
-            # rdb.insert(twilio_response, int(user_message))
+            print('========================================')
 
             twml.message(tmsg.twilio_responses[twilio_response])
 
@@ -64,47 +62,27 @@ def sms_reply():
             expires = datetime.utcnow() + timedelta(hours=1)
             response.set_cookie(
                 f'{twilio_response}',
-                value=int(user_message),
+                value=user_message,
                 expires=expires.strftime('%a, %d %b %Y %H:%M:%S GMT')
             )
 
             return response
-
-            # return response
-
-            # if twilio_response == 'choir_meetings':
-            #     pass
-
-                # print(rdb.response_values)
-                # rdb.insert_into_db()
-
-                # '''
-                # THE ISSUE IS THAT ResponsesDB object GETS INITIALIZED EVERY TIME A MESSAGE IS SENT
-                #
-                # remedy with database?
-                # need intermediate storage..
-                # cookies?
-                # '''
         else:
             # program comes here when done reporting
+            # user may or may not respond
 
-            # twml.message(f"-\n\nMy last message was '{tmsg.last_twilio_message}'")
-            # twml.message(f"-\n\nMy last message was '{tmsg.last_twilio_message.split()[-1][:-1]}'")
             twml.message("-\n\nWelcome. Text 'cog' for report.")
 
-            return str(twml)
+            response = make_response(str(twml))
 
+            for resp in tmsg.twilio_responses:
+                response.set_cookie(
+                    f'{resp}',
+                    value='',
+                    expires=0
+                )
 
-
-
-    # if tmsg.last_twilio_message == '---DONE HERE---':
-    #     # process values?
-    #     db.insert_into_db()
-    # else:
-    #     twilio_response.message(tmsg.twilio_responses[tmsg.last_twilio_message])
-    #     # twilio_response.message(tmsg.twilio_responses[tmsg.last_twilio_message.split()[1][:-1]])
-    #     print(tmsg.last_twilio_message.split()[1][:-1])
-    #     # db.insert(user_message)
+            return response
 
 
 if __name__ == '__main__':
