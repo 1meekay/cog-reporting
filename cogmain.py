@@ -5,12 +5,10 @@ import os
 
 class COGBrowser:
     def __init__(self):
-        self.cog_username = 'MikeB'
-        self.cog_password = 'Pasteur123'
-        # self.cog_username = os.environ.get('cogUsername')
-        # self.cog_password = os.environ.get('cogPassword')
+        self.cog_username = os.environ.get('cogUsername')
+        self.cog_password = os.environ.get('cogPassword')
         self.options = Options()
-        # self.options.headless = True
+        self.options.headless = True
         self.browser = Chrome()
 
 
@@ -73,10 +71,10 @@ class COGBrowser:
         self.browser.quit()
 
 
-if __name__ == '__main__':
-    cog = COGBrowser()
-    cog.browse()
-    cog.login()
-    cog.report()
-    cog.fill_in_form()
-    # cog.quit_browser()
+# if __name__ == '__main__':
+# #     cog = COGBrowser()
+# #     cog.browse()
+# #     cog.login()
+# #     cog.report()
+# #     cog.fill_in_form()
+# #     cog.quit_browser()
