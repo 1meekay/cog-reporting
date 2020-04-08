@@ -4,8 +4,6 @@ from db import ResponsesDB
 from messaging import Message
 from datetime import datetime, timedelta
 
-# LOOK INTO SESSIONS
-
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
