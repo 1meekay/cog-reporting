@@ -1,9 +1,13 @@
 from selenium.webdriver import Chrome
+import os
+
+cog_username = os.environ.get('cogUsername')
+cog_password = os.environ.get('cogPassword')
 
 browser = Chrome()
 browser.get('https://lookup.coghq.org/report/minister/login.php')
-browser.find_element_by_name('usr').send_keys('MikeB')
-browser.find_element_by_name('psw').send_keys('Pasteur123')
+browser.find_element_by_name('usr').send_keys(cog_username)
+browser.find_element_by_name('psw').send_keys(cog_password)
 browser.find_element_by_name('submit').click()
 
 # report link
